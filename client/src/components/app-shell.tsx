@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -11,6 +12,26 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
+import { useLanguage, resolveLanguage } from "@/lib/i18n";
+import type { ContentProfile } from "@shared/schema";
+
+function LanguageSynchronizer({ profileLanguage }: { profileLanguage: string | null | undefined }) {
+  const { language, setLanguage } = useLanguage();
+  const lastSyncedProfileLanguage = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (profileLanguage && profileLanguage !== lastSyncedProfileLanguage.current) {
+      const resolvedProfileLanguage = resolveLanguage(profileLanguage);
+      if (resolvedProfileLanguage !== language) {
+        setLanguage(resolvedProfileLanguage);
+      }
+      lastSyncedProfileLanguage.current = profileLanguage;
+    }
+  }, [profileLanguage, language, setLanguage]);
+
+  return null;
+}
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -28,6 +49,10 @@ export function AppShell({ children }: AppShellProps) {
   const [location] = useLocation();
   const currentPageName = routeNames[location] || "Página";
 
+  const { data: profile } = useQuery<ContentProfile>({
+    queryKey: ["/api/profile"],
+  });
+
   const sidebarStyle = {
     "--sidebar-width": "16rem",
     "--sidebar-width-icon": "3rem",
@@ -35,6 +60,7 @@ export function AppShell({ children }: AppShellProps) {
 
   return (
     <SidebarProvider defaultOpen={false} style={sidebarStyle}>
+      <LanguageSynchronizer profileLanguage={profile?.language} />
       <div className="flex min-h-screen w-full">
         <AppSidebar />
         <SidebarInset className="flex flex-col flex-1 min-h-0">
