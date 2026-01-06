@@ -1,0 +1,48 @@
+Build a comprehensive Full-Stack SaaS application for LinkedIn Viral Content Creation and Management. The app should use React (Vite) for the frontend, Node.js/Express for the backend, and PostgreSQL for the database. Use Tailwind CSS for styling with a modern, clean, and "dark mode" aesthetic suitable for professional creators.
+
+Here is the detailed specification and required features:
+
+### 1. CORE LOGIC & KNOWLEDGE BASE
+- **Context:** I have uploaded several `.md` files to the root directory. These files contain specific frameworks (AIDA, BAB, FAB), viral hooks, tone of voice guidelines, and content structures.
+- **AI Integration:** Integrate with the Anthropic API (Claude). The backend must read the uploaded `.md` files and inject them as "System Prompts" or "Context" when generating content.
+- **Logic:** The AI should not just "write a post," but follow a guided structure based on the user's selected framework (e.g., if user selects AIDA, the AI explicitly generates Attention, Interest, Desire, Action sections based on the logic in the markdown files).
+
+### 2. USER JOURNEY & AUTHENTICATION
+- **Landing & Auth:** Create a landing page. Implement Authentication (use Passport.js or a simple JWT implementation, or Clerk if available in environment) supporting Email/Password and LinkedIn Social Login (OAuth 2.0 placeholder).
+- **Onboarding Flow (Wizard):**
+  1. **Persona Discovery:** A multi-step form asking about the user's role, industry, and tone of voice.
+  2. **Implication/Goals:** Ask what they want to achieve (Leads, Authority, Networking).
+  - *Save these preferences to the user's profile in the database to personalize future generations.*
+
+### 3. MAIN FEATURES
+- **Content Studio:**
+  - A dashboard where users can create a new post.
+  - **Selector:** Dropdowns for Framework (BAB, AIDA, FAB), Objective, and "Vibe" (Controversial, Educational, Storytelling).
+  - **Editor:** A rich text editor to view and tweak the AI-generated content.
+- **LinkedIn Integration (Mock/Structure):**
+  - Create the backend routes to handle LinkedIn API for:
+    1. `POST /share`: To publish content.
+    2. `GET /analytics`: To retrieve likes, comments, and impressions.
+  - *Note: Since actual OAuth requires keys, build the structure and mock the response for now so I can test the UI.*
+- **Scheduler & Queue:**
+  - A visual calendar view (react-big-calendar or similar) showing scheduled posts.
+  - A "Queue" list view for upcoming content.
+
+### 4. ANALYTICS DASHBOARD
+- Create a visual dashboard using charting libraries (like Recharts).
+- Display metrics: Total Impressions, Engagement Rate, Top Performing Posts.
+- **Browser Extension Prep:** Create a dedicated API endpoint (`/api/external/stats`) that a future browser extension could hit to send/receive data.
+
+### 5. UI/UX REQUIREMENTS
+- **Vibe:** High-end, "pro" tool. Think linear.app or Raycast style.
+- **Responsiveness:** Fully mobile-responsive.
+- **Feedback Loops:** After a post is generated, allow the user to rate it (Thumbs up/down). Save this feedback to refine future prompts for that specific user.
+
+### TECHNICAL IMPLEMENTATION STEPS
+1. Set up the PostgreSQL schema (Users, Posts, Personas, Analytics).
+2. Initialize the Express server with Anthropic SDK.
+3. specific function to parse the local `.md` files into a string for the LLM context.
+4. Build the React frontend with the Onboarding Wizard and Dashboard.
+5. Connect the frontend forms to the backend AI generation endpoints.
+
+Start by setting up the database schema and the backend server structure.

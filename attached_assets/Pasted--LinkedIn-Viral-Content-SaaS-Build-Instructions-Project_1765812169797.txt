@@ -1,0 +1,204 @@
+# LinkedIn Viral Content SaaS - Build Instructions
+
+## 🎯 Project Overview
+
+Build a web-based SaaS platform that helps professionals create viral LinkedIn content through a guided 7-step workflow. The system uses Claude Opus 4.5 API and guarantees content quality scores of ≥9/10.
+
+**Core Value:** Transform any professional into a LinkedIn content creator in 10-15 minutes per post, with predictable viral potential based on analysis of 318,842 real LinkedIn posts.
+
+---
+
+## 📋 Technical Requirements
+
+### Authentication
+- Email/Password signup with email verification
+- Google OAuth login
+- LinkedIn OAuth login
+- Session management (30-day duration)
+
+---
+
+## 🛤️ User Flow & Screens
+
+### 1. Landing Page (/)
+- Hero: "Crie posts virais no LinkedIn em 15 minutos"
+- Features section (3 cards)
+- Single pricing card: R$ 97/mês (12 posts/month)
+- CTA: "Começar" → /signup
+
+### 2. Auth Pages
+- /signup - Email/password + Google + LinkedIn OAuth
+- /login - Same options
+- /reset-password - Email-based reset
+
+### 3. Onboarding (/onboarding) - 6 Steps
+**REQUIRED before accessing app**
+
+Step 1: Language (dropdown)
+Step 2: Industry (text input)
+Step 3: Professional Description (textarea, 20-500 chars)
+Step 4: Target Audience (multi-tag input, 1-10 tags)
+Step 5: Topics (multi-tag input, 1-15 tags)
+Step 6: Qualification (job title required, company URL & WhatsApp optional)
+
+### 4. Dashboard (/dashboard)
+- Header: Logo + “Content Studio" + "+ Novo Post" button
+- Post cards showing: hook preview, score badge, date, actions menu
+- Empty state with CTA to create first post
+- Pagination (10 posts per page)
+
+**Post Card Actions:**
+- View full post (modal)
+- Delete post (with confirmation)
+
+### 5. Content Studio (/studio)
+**Chat-style interface like Claude.ai**
+
+7-Step Workflow:
+
+**STEP 1: Briefing**
+- System suggests 3-5 topics based on user profile
+- Asks: objective, available data, preferred topic
+- Stores context for next steps
+
+**STEP 2: Structure Selection**
+- Offers 3 copywriting structures (PAS, AIDA, BAB, FAB, HSO, Storytelling)
+- Indicates recommended option
+- User selects one
+
+**STEP 3: Content Type**
+- Offers 3 content types from 16 available
+- Based on structure + objective
+- User selects one
+
+**STEP 4: Hook Creation**
+- Generates 3 hooks (authority+data, personal narrative, tension/contrast)
+- User can regenerate (max 10x per step)
+- Regeneration modes: new, variations, specific feedback
+
+**STEP 5: Body Construction**
+- Builds complete post using all previous choices
+- Follows structure, applies user profile
+- Target: 1,250-3,000 chars, 14+ short paragraphs
+- User can request adjustments
+
+**STEP 6: CTA Selection**
+- Offers 3 CTAs based on objective
+- Types: engagement, save, conversion
+- User selects one
+
+**STEP 7: Score & Validation**
+- Calculates score (0-10) based on:
+  - Hook quality (30%)
+  - Structure/length (25%)
+  - Data usage (15%)
+  - CTA clarity (15%)
+  - Algorithm alignment (15%)
+- Shows predictive analytics (top 1%, top 5% probability)
+- Suggests best day/time to post
+
+**CRITICAL RULE:** If score < 9, system auto-generates improved version. User CANNOT save posts with score < 9.
+
+### 6. Settings (/settings)
+- Account settings
+- Content Profile (editable)
+- Subscription management (Stripe portal link)
+- Preferences (timezone, notifications)
+- Delete account option
+
+---
+
+## 💳 Payment Integration (Stripe)
+
+**Single Plan:** $29/month
+- 8 high-quality posts per month
+- Post credits accumulate every month if they are not used
+
+---
+
+## 🤖 Claude API Integration
+
+**Model:** Claude opus 4.5
+
+**System Prompt Must Include:**
+- Full content library (97 intro hooks, 50 viral hooks, 6 structures, 16 content types, 100+ CTAs)
+- LinkedIn 2025 algorithm data
+- User's content profile (always active)
+
+**Streaming:** Enable SSE for real-time response display
+
+**Context Management:**
+- Maintain conversation history through all 7 steps
+- Each step builds on previous decisions
+- Max 10 regenerations per step (soft limit)
+
+---
+
+## 📊 Scoring Algorithm
+
+```javascript
+function calculateScore(hook, body, cta) {
+  const hookScore = evaluateHook(hook); // 0-10
+  const structureScore = evaluateStructure(body); // 0-10
+  const dataScore = evaluateData(body); // 0-10
+  const ctaScore = evaluateCTA(cta); // 0-10
+  const algorithmScore = evaluateAlgorithm(hook + body + cta); // 0-10
+  
+  return (
+    hookScore * 0.30 +
+    structureScore * 0.25 +
+    dataScore * 0.15 +
+    ctaScore * 0.15 +
+    algorithmScore * 0.15
+  );
+}
+
+// Predictive Analytics
+function getPredictions(score) {
+  if (score >= 10) return { top1: 40, top5: 85 };
+  if (score >= 9.5) return { top1: 30, top5: 70 };
+  if (score >= 9.0) return { top1: 20, top5: 60 };
+  // ...
+}
+
+🎨 UI/UX Guidelines
+Colors:
+Primary: #0A66C2 (LinkedIn blue)
+Success: #00C853 (score 9-10)
+Warning: #FFC107 (score 7-8)
+Error: #F44336 (score <7)
+Typography: Inter font family
+Components:
+Chat interface with streaming text
+Score badges (colored circles)
+Toast notifications for actions
+Skeleton loaders for async content
+Modal confirmations for destructive actions
+Mobile-responsive: Works only desktop
+
+⚠️ Critical Business Rules
+Score ≥9 Required: Cannot save posts with score < 9
+Profile Always Active: All generated content considers user profile
+8 Posts/Month Limit: Hard limit, resets on 1st of month
+Onboarding Required: No access to Content Studio without completed profile
+Clone Creates New Post: Original stays intact, clone counts toward limit
+Profile Edits Don't Affect Old Posts: Saved posts keep their original profile snapshot
+
+📁 Content Library (Hardcoded in System Prompt)
+The following should be included in every Claude API call:
+Copywriting Structures:
+PAS (Problem-Agitation-Solution)
+AIDA (Attention-Interest-Desire-Action)
+BAB (Before-After-Bridge)
+FAB (Features-Advantages-Benefits)
+HSO (Hook-Story-Offer)
+Storytelling
+Content Types (16):
+How-to, Framework, Case Study, Story, Contrarian, List, Data/Research, Question, Problem/Solution, Comparison, Behind the Scenes, Personal Experience, Prediction/Trend, Myth Busting, Tool Review, Lesson Learned
+Best Posting Times:
+Best day: Sunday (+23% performance)
+Best time: 05h-07h GMT
+Avoid: Wednesday, Thursday
+Sweet spot: 1,250-3,000 characters
+
+Start building! Focus on getting the core workflow functional first, then add payment and polish.

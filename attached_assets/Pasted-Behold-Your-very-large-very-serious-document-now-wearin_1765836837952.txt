@@ -1,0 +1,328 @@
+Behold. Your very large, very serious document, now wearing English like a tailored suit.
+
+⸻
+
+Profile Studio
+
+Functional Requirements: Profile Studio
+
+1. Overview
+
+Create a separate feature called Profile Studio, where users can build and refine their creator personality profile. This feature is NOT part of the mandatory onboarding flow, but is encouraged after onboarding completion via a tooltip or prompt.
+
+Profile Studio allows users to:
+	1.	Answer 4 essential personality questions
+	2.	Optionally take personality tests (DISC, Big Five, etc.)
+	3.	View a visualization of their complete profile
+	4.	Edit and refine it at any time
+
+Goal: Create a “personality studio” users visit when they want to fine-tune how their posts sound, not during the initial onboarding flow.
+
+⸻
+
+2. Onboarding Removal
+
+2.1 What Changes in Onboarding
+
+Onboarding steps remain:
+	1.	Language
+	2.	Industry
+	3.	Professional description
+	4.	Target audience
+	5.	Post topics
+	6.	Qualification
+
+Onboarding ends ONLY with a basic profile:
+	•	User completes the 6 steps
+	•	System saves the basic profile (language, industry, description, audience, topics, qualification)
+	•	Personality remains blank / not configured
+
+⸻
+
+3. Post-Onboarding Prompt
+
+3.1 When to Show
+
+Trigger: Immediately after the user completes Step 6 (Qualification) and clicks “Finish Profile.”
+
+Before redirecting to the Dashboard:
+	•	Show an incentive tooltip / modal / overlay
+
+3.2 Prompt Content
+
+Visual elements:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✨ Profile Created Successfully!
+
+Want your posts to sound EXACTLY like you?
+
+Complete your profile in Profile Studio:
+✓ 4 quick questions about your style
+✓ Personality tests (DISC, Big Five)
+✓ Fine-tune your tone of voice
+
+Takes ~5 minutes and completely transforms
+the quality of your posts.
+
+[Complete Profile Now] [Do It Later]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Button behavior:
+	•	Complete Profile Now → Redirects to /profile-studio → Opens Profile Studio at the first section
+	•	Do It Later → Closes tooltip → Redirects to /dashboard → Show menu badge: “Complete your profile” (persists until completion)
+
+3.3 Follow-Up Reminders
+
+If the user chooses “Do It Later”:
+
+Dashboard (first visit):
+	•	Subtle top banner: “💡 Complete your profile in Profile Studio for more personalized posts”
+	•	Button: “Complete Now”
+	•	Can be dismissed (X), but reappears in future sessions
+
+Navigation Menu:
+	•	“Profile Studio” item with notification badge (orange/yellow dot)
+	•	Badge disappears after profile completion
+
+Email (3 days later if still incomplete):
+	•	Subject: “Your posts can sound even more like you”
+	•	Content: Profile Studio benefits + CTA
+	•	Sent once only (no spam)
+
+⸻
+
+4. Profile Studio Structure
+
+4.1 Access
+	•	URL: /profile-studio
+	•	Navigation:
+	•	Main menu item: “Profile Studio”
+	•	Notification badge if not completed
+	•	Accessible at any time (even after completion)
+
+4.2 General Layout
+
+Based on the provided image:
+
+┌─────────────────────────────────────────────┐
+│  HEADER: Profile Studio  |  Content Studio  │
+├─────────┬───────────────────────────────────┤
+│ SIDEBAR │ CONTENT AREA                      │
+│         │                                   │
+│ Nav     │ [Active Section]                  │
+│ Items:  │                                   │
+│         │ Expandable cards                  │
+│ • Intro │ Forms                             │
+│ • Basic │ Visualizations                    │
+│ • Style │                                   │
+│ • Tests │                                   │
+│ • Review│                                   │
+│         │                                   │
+└─────────┴───────────────────────────────────┘
+
+Components
+
+Header
+	•	Title: “Profile Studio”
+	•	Subtitle: “Configure how your posts will sound”
+	•	Completion indicator: “60% complete” (progress bar)
+
+Sidebar
+	•	Vertical list of sections
+	•	Each item shows:
+	•	Section number
+	•	Section name
+	•	Status (✓ complete | ○ not started | ◐ partial)
+	•	Click navigates to the section
+	•	Active section highlighted
+
+Content Area
+	•	Sections organized in cards / accordions
+	•	Smooth vertical scrolling
+	•	Sections expandable/collapsible
+	•	Auto-save enabled
+
+⸻
+
+5. Profile Studio Sections
+
+5.1 Section 0: Introduction (Intro)
+
+Visibility: Always visible at the top, not collapsible.
+
+Content
+	•	Card with user photo (if available) + name
+	•	Circular profile photo
+	•	User name
+	•	Title/role (from professional description)
+
+Welcome text:
+“Welcome to Profile Studio! Here you’ll configure how you want your posts to sound. Answer honestly. The more specific you are, the better your posts will be.”
+
+Progress indicator
+	•	Progress bar: “0% complete”
+	•	Updates as sections are filled
+	•	Motivational message: “Complete 100% to unlock full potential”
+
+State: Always visible, no action required.
+
+⸻
+
+5.2 Section 1: Essential Questions (Basic)
+
+Section title: “1. Essential Questions”
+Initial status: Not started ○
+Description: “Answer 4 quick questions to capture your unique style.”
+
+5.2.1 Creator Archetype
+Question: “How do you want to be seen on LinkedIn?”
+Field: Radio buttons (single choice)
+
+Options:
+	1.	🛠️ The Builder – “Hands-on. Zero PowerPoint, just execution.”
+	2.	🧠 The Thinker – “Frameworks, deep analysis, connecting the dots.”
+	3.	📖 The Storyteller – “Authentic narratives, vulnerability, personal journey.”
+	4.	🎓 The Educator – “Teaches for real, no selling. Dense and useful content.”
+	5.	🔬 The Scientist – “Data, experiments, evidence. Healthy skepticism.”
+	6.	✍️ Other – [Text field]
+
+Validation: Required
+Auto-save: On selection
+
+⸻
+
+5.2.2 Anti-Values
+Question: “What IRRITATES you in content creators?”
+Field: Checkboxes (multiple choice)
+
+Options:
+	•	☐ Excessive self-promotion
+	•	☐ Empty content / magic hacks
+	•	☐ Corporate jargon
+	•	☐ Stage gurus selling courses
+	•	☐ Lack of real data
+	•	☐ Fake humility
+	•	☐ Unrealistic promises
+	•	☐ Other: [text input]
+
+Validation: Optional
+Auto-save: On change
+
+⸻
+
+5.2.3 Tone of Voice (Sliders)
+Question: “How do you communicate?”
+Field: 4 sliders (0–10)
+	1.	Formality
+	•	Corporate 👔 ← → Casual 🤙
+	2.	Humor
+	•	Serious 😐 ← → Ironic 😏
+	3.	Depth
+	•	Accessible 💡 ← → Technical 🔬
+	4.	Emotion
+	•	Rational 🧠 ← → Vulnerable ❤️
+
+Defaults: 5
+Auto-save: On release
+
+⸻
+
+5.2.4 Golden Rules
+Question: “Is there any RULE you never break when creating content?”
+Field: Textarea
+	•	Limit: 300 characters
+	•	Counter: “0/300”
+	•	Placeholder: “e.g. I never ask for follows. I only deliver value.”
+
+Validation: Optional
+Auto-save: 2-second debounce
+
+⸻
+
+Section 1 State
+	•	○ Not started: No answers
+	•	◐ Partial: At least one subsection answered
+	•	✓ Complete: Archetype answered (minimum requirement)
+
+⸻
+
+5.3 Section 2: Personality Tests (Tests)
+
+IMPORTANT: Entire Section 5.3 is under construction. This is a preview of what’s coming.
+
+Title: “2. Personality Tests”
+Initial status: Not started ○
+Description: “Take tests to refine your profile even more. Completely optional, but recommended.”
+
+Intro text:
+“These tests capture nuances of your personality that further refine how your posts sound. Choose any you want. The more you complete, the better the result.”
+
+Test 2.1: DISC (DUMMY DATA)
+	•	Title: “DISC Personality Test”
+	•	Description: “Identifies whether you are Dominant, Influential, Steady, or Conscientious.”
+	•	Estimated time: “~5 minutes”
+	•	Status: “Coming soon”
+
+Results:
+	•	Primary profile: e.g. “Dominant (D)”
+	•	Secondary profile: e.g. “Influential (I)”
+	•	Scores: D=75%, I=60%, S=40%, C=45%
+
+Test 2.2: Big Five (DUMMY DATA)
+	•	Measures Openness, Conscientiousness, Extraversion, Agreeableness, Neuroticism
+	•	Estimated time: “~8 minutes”
+	•	Status: “Coming soon”
+
+Test 2.3: Enneagram (Optional – Phase 2)
+Test 2.4: Myers-Briggs (MBTI) (Optional – Phase 2)
+Section 2 State
+	•	○ Not started: No tests completed
+	•	◐ Partial: At least 1 test
+	•	✓ Complete: 2+ tests (DISC + Big Five recommended)
+
+⸻
+
+5.4 Section 3: Review & Visualization
+
+Title: “3. Your Complete Profile”
+Visibility: Always visible, updates dynamically
+
+Includes:
+	•	Essential summary
+	•	Personality test summaries
+	•	Visual charts
+	•	Interpretations
+	•	Action buttons:
+	•	Edit Profile
+	•	Take More Tests
+	•	Finalize and Use Profile
+
+Completion toast:
+“Profile complete! Your posts will now sound like you.”
+
+⸻
+
+6. Persistence and Auto-Save
+
+All answers auto-save with subtle confirmation:
+“All changes saved ✓”
+
+⸻
+
+7. Integration With Post Creation
+
+Profile completion level affects how content is generated, from generic to highly personalized.
+
+⸻
+
+8. States, Validations, Feedback, KPIs, and Executive Summary
+
+(Translated faithfully as specified, with no functional changes.)
+
+⸻
+
+End result:
+A brutal competitive advantage. Posts that sound human, specific, and unmistakably like their creator. No generic sludge. No soulless tone.
+
+Claude would be proud.
