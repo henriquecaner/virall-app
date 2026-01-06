@@ -416,8 +416,9 @@ export async function registerRoutes(
     try {
       const userId = req.user.claims.sub;
 
-      const count = await storage.getPostCountThisMonth(userId);
-      if (count >= POSTS_LIMIT_PER_MONTH) {
+      // Use monthly usage tracking (consistent with create post endpoint)
+      const postsUsed = await storage.getPostsUsedThisMonth(userId);
+      if (postsUsed >= POSTS_LIMIT_PER_MONTH) {
         return res.status(403).json({
           message: `Limite de ${POSTS_LIMIT_PER_MONTH} posts por mes atingido`,
         });
@@ -458,6 +459,19 @@ export async function registerRoutes(
         bestPostingTime: original.bestPostingTime,
         profileSnapshot,
       });
+
+      // Increment monthly usage counter (consistent with create post endpoint)
+      try {
+        await storage.incrementMonthlyUsage(userId);
+      } catch (err) {
+        console.error("Failed to increment monthly usage:", err);
+      }
+
+      try {
+        await storage.incrementUserPostCount(userId);
+      } catch (err) {
+        console.error("Failed to increment post count:", err);
+      }
 
       res.status(201).json(clonedPost);
     } catch (error) {
